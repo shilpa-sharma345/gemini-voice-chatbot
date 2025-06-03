@@ -41,7 +41,7 @@ Try these examples in the chatbot:
 ├── requirements.txt    # Python dependencies
 └── README.md           # Project documentation
 
- Acknowledgements
+ Acknowledgements : -
 Google Generative AI (Gemini) ,
 Gradio ,
 gTTS
