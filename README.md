@@ -34,9 +34,11 @@ Try these examples in the chatbot:
 
  File Structure
 
+.
 ├── app.py              # Main chatbot script
-├── requirements.txt    # Python dependencies
+├── requirements.txt    # Project dependencies
 └── README.md           # Project documentation
+
 
  Acknowledgements : -
 Google Generative AI (Gemini) ,
