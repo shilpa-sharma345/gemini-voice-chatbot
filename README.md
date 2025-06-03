@@ -28,7 +28,7 @@ os.environ["GOOGLE_API_KEY"] = "your-api-key-here"
 Simply run the script:
 python gemini-voice-chatbot.py
 
- Example Inputs
+Example Inputs :-
 Try these examples in the chatbot:
 
 "What is AI?"
