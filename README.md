@@ -2,17 +2,12 @@
 This project is a Gemini 1.5 Flash-powered chatbot with automatic text-to-speech (TTS) using gTTS and Gradio for the UI. It accepts text input, responds with intelligent replies from Google's Gemini API, and plays back the response using generated voice — auto-playing the audio for a seamless experience.
 
 ## Features
-✅ Text-based chatbot using Gemini 1.5 Flash
+1.  Text-based chatbot using Gemini 1.5 Flash
+2.  Auto-generated speech for responses using Google Text-to-Speech (gTTS)
+3.  Built with an interactive Gradio interface
+4.  Cleans Markdown-style formatting from chatbot responses
 
-🔊 Auto-generated speech for responses using Google Text-to-Speech (gTTS)
-
-🎛️ Built with an interactive Gradio interface
-
-🧼 Cleans Markdown-style formatting from chatbot responses
-
-🎙️ Auto-plays voice responses using injected JavaScript
-
-🧠 Maintains conversation history for contextual awareness
+ Auto-plays voice responses using injected JavaScript
 
 Requirements
 Make sure you have Python 3.7+ and install dependencies:
