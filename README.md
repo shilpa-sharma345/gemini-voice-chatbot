@@ -42,7 +42,7 @@ Try these examples in the chatbot:
 └── README.md           # Project documentation
 
  Acknowledgements
-Google Generative AI (Gemini)
-Gradio
+Google Generative AI (Gemini) ,
+Gradio ,
 gTTS
 
