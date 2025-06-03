@@ -20,7 +20,6 @@ pip install gradio google-generativeai gTTS
 
 🔑 Setup
 Get your Google Generative AI API key.
-
 Set it as an environment variable or directly in the script:
 os.environ["GOOGLE_API_KEY"] = "your-api-key-here"
 
