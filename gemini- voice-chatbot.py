@@ -76,7 +76,7 @@ window.onload = function() {
 
 with gr.Blocks(css=css) as demo:
     gr.HTML(js)
-    gr.Markdown("## 🤖 Gemini-powered Chatbot with TTS and Persistent Chat")
+    gr.Markdown("## 🤖 Gemini-powered Chatbot with Auto Text-Speech")
 
     chatbot = gr.Chatbot(label="Chatbot")
     message = gr.Textbox(label="Your message", placeholder="Type here...", lines=10)
