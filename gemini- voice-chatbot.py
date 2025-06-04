@@ -5,37 +5,30 @@ import google.generativeai as genai
 from gtts import gTTS
 import tempfile
 
-# Set your Google API key here
-os.environ["GOOGLE_API_KEY"] = "Your API Key"
+# Google API Key setup
+os.environ["GOOGLE_API_KEY"] = "Your API KEY"
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 def clean_text_for_tts(text):
-    # Remove markdown-like characters: *, _, , ~
     text = re.sub(r'[\*_~]+', '', text)
-
-    # Replace long dashes or multiple dashes with a space
     text = re.sub(r'-{2,}', ' ', text)
-
-    # Replace sequences of = or _ with a space (used in markdown headers)
     text = re.sub(r'[=_]{2,}', ' ', text)
-
-    # Remove angle brackets, brackets, or other markdown artifacts
     text = re.sub(r'[\[\]<>]', '', text)
-
-    # Replace multiple whitespace with a single space
     text = re.sub(r'\s+', ' ', text)
-
     return text.strip()
 
-def chatbot_response(user_message, gr_history):
-    try:
-        gr_history = gr_history or []
-        flat_texts = [msg["content"] for msg in gr_history]
+def chatbot_response(user_message, chat_state, gr_history):
+    if user_message.strip() == "":
+        return "", chat_state, gr_history, None
 
-        chat = model.start_chat(history=flat_texts)
-        response = chat.send_message(user_message)
+    try:
+        if chat_state is None:
+            chat_state = model.start_chat(history=[])
+            gr_history = []
+
+        response = chat_state.send_message(user_message)
         answer = response.text
 
         clean_answer = clean_text_for_tts(answer)
@@ -44,21 +37,22 @@ def chatbot_response(user_message, gr_history):
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
         tts.save(temp_file.name)
 
-        new_gr_history = gr_history + [
-            {"role": "user", "content": user_message},
-            {"role": "assistant", "content": answer}
-        ]
+        # Make sure gr_history is initialized
+        gr_history = gr_history or []
+        gr_history.append([user_message, answer])
 
-        return "", new_gr_history, temp_file.name
+        return "", chat_state, gr_history, temp_file.name
 
     except Exception as e:
-        print(f"❌ Exception occurred: {e}")
-        return "", gr_history, None
+        error_msg = f"⚠️ Error: {str(e)}"
+        print(error_msg)
+        gr_history.append([user_message, error_msg])
+        return "", chat_state, gr_history, None
 
 
 css = """
 audio {
-    display: none !important;  /* Hide audio controls */
+    display: none !important;
 }
 """
 
@@ -81,26 +75,27 @@ window.onload = function() {
 """
 
 with gr.Blocks(css=css) as demo:
-    gr.HTML(js)  # Inject JS for auto-playing audio
+    gr.HTML(js)
+    gr.Markdown("## 🤖 Gemini-powered Chatbot with TTS and Persistent Chat")
 
-    gr.Markdown("## 🤖 Gemini-powered Chatbot with Auto Text-to-Speech")
-
-    chatbot = gr.Chatbot(label="Chatbot", type="messages")
-    message = gr.Textbox(label="Your message", placeholder="Type here...")
-
+    chatbot = gr.Chatbot(label="Chatbot")
+    message = gr.Textbox(label="Your message", placeholder="Type here...", lines=10)
     audio_out = gr.Audio(type="filepath", interactive=False, autoplay=True)
 
+    chat_state = gr.State()
+    
     message.submit(
         fn=chatbot_response,
-        inputs=[message, chatbot],
-        outputs=[message, chatbot, audio_out],
+        inputs=[message, chat_state, chatbot],
+        outputs=[message, chat_state, chatbot, audio_out],
     )
 
     gr.Examples(
         examples=[["What is AI?"], ["Who is the PM of India?"]],
         inputs=[message],
         fn=chatbot_response,
-        outputs=[message, chatbot, audio_out],
+        outputs=[message, chat_state, chatbot, audio_out],
     )
-    if __name__ == "__main__":
-        demo.launch()
+
+if __name__ == "__main__":
+    demo.launch()
